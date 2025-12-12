@@ -4,4 +4,4 @@
 ---
 
 ## 📍 Site URL  
-https://your-username.github.io/musa5500-final-project/
+[https://your-username.github.io/musa5500-final-project/](https://jocajoe.github.io/MUSA-5500-Final-Project/)
