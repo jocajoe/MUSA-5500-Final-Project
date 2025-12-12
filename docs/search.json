@@ -19,5 +19,19 @@
     "title": "Conclusion",
     "section": "",
     "text": "Conclusion\nFinal takeaways and next steps."
+  },
+  {
+    "objectID": "pages/results.html",
+    "href": "pages/results.html",
+    "title": "Results",
+    "section": "",
+    "text": "Results\nSummaries, charts, and interactive visualizations."
+  },
+  {
+    "objectID": "pages/methodology.html",
+    "href": "pages/methodology.html",
+    "title": "Methodology",
+    "section": "",
+    "text": "Methodology\nDescribe your data collection, cleaning, and analysis steps here."
   }
 ]

@@ -1,0 +1,7 @@
+---
+title: "Methodology"
+---
+
+# Methodology
+
+Describe your data collection, cleaning, and analysis steps here.
