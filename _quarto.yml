@@ -1,0 +1,21 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "MUSA 5500 Final Project"
+  navbar:
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "Methodology"
+        href: pages/methodology.qmd
+      - text: "Results"
+        href: pages/results.qmd
+      - text: "Conclusion"
+        href: pages/conclusion.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
