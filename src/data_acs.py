@@ -35,13 +35,17 @@ def load_acs_philly(api_key: str, year: int = 2022):
 # frome census website
 def load_philly_tract_shapes(year: int = 2022):
 
-    # TIGER tract shapefiles: tl_<year>_<STATE>_<county>_tract.zip
-    url = f"https://www2.census.gov/geo/tiger/TIGER{year}/TRACT/tl_{year}_{PA_FIPS}{PHILLY_FIPS}_tract.zip"
+    url = f"https://www2.census.gov/geo/tiger/TIGER{year}/TRACT/tl_{year}_{PA_FIPS}_tract.zip"
+    print("Downloading from:", url)
 
     gdf = gpd.read_file(url)
 
-    # GEOID column already exists in TIGER data
-    return gdf
+    # Filter to Philadelphia County
+    gdf_philly = gdf[gdf["COUNTYFP"] == PHILLY_FIPS].copy()
+
+    return gdf_philly
+
+
 
 # def function to merge acs data (home value) with census tract shapes
 def load_philly_acs_geo(api_key: str, year: int = 2022):
