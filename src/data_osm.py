@@ -1,6 +1,7 @@
 # src/data_osm.py
 
 # load packages
+import numpy as np
 import osmnx as ox
 import geopandas as gpd
 from shapely.geometry import Point
@@ -13,8 +14,21 @@ def load_walk_network(place="Philadelphia, Pennsylvania"):
 
 # def function to compute walking distance from tract centroid
 # to nearest brewery using street network
-def nearest_brewery_distance(G, tract_gdf, brewery_gdf):
+def nearest_brewery_walk_distance(G, tract_gdf, brewery_gdf):
 
+    tract_gdf = tract_gdf.copy()
+    brewery_gdf = brewery_gdf.copy()
+
+    # Ensure CRS for network matching
+    tract_gdf = tract_gdf.to_crs(epsg=4326)
+    brewery_gdf = brewery_gdf.to_crs(epsg=4326)
+
+    # ---- SAFE centroid calculation ----
+    tracts_proj = tract_gdf.to_crs(epsg=3857)
+    centroids_proj = tracts_proj.centroid
+    centroids = gpd.GeoSeries(centroids_proj, crs=3857).to_crs(epsg=4326)
+
+    # Precompute brewery nodes
     brewery_nodes = [
         ox.nearest_nodes(G, geom.x, geom.y)
         for geom in brewery_gdf.geometry
@@ -22,50 +36,65 @@ def nearest_brewery_distance(G, tract_gdf, brewery_gdf):
 
     distances = []
 
-    for geom in tract_gdf.centroid:
+    for geom in centroids:
         try:
             source = ox.nearest_nodes(G, geom.x, geom.y)
-        except:
-            distances.append(None)
+        except Exception:
+            distances.append(np.nan)
             continue
 
-        # shortest path to brewery node
         dists = []
         for bnode in brewery_nodes:
             try:
-                length = ox.shortest_path_length(G, source, bnode, weight="length")
-                dists.append(length)
-            except:
+                dists.append(
+                    ox.shortest_path_length(G, source, bnode, weight="length")
+                )
+            except Exception:
                 continue
 
-        distances.append(min(dists) if len(dists) > 0 else None)
+        distances.append(min(dists) if dists else np.nan)
 
-    tract_gdf["nearest_brewery_walk_meters"] = distances
+    tract_gdf["walk_dist_to_brewery_m"] = distances
     return tract_gdf
+
+
 
 # def function to count breweries within walking distanct
 # of tract centroid
 def breweries_within_radius(G, tract_gdf, brewery_gdf, radius=800):
 
+    tract_gdf = tract_gdf.copy()
+    brewery_gdf = brewery_gdf.copy()
+
+    # Ensure CRS for OSMnx node snapping (lat/lon)
+    tract_gdf = tract_gdf.to_crs(epsg=4326)
+    brewery_gdf = brewery_gdf.to_crs(epsg=4326)
+
+    # ---- SAFE centroid calculation ----
+    tracts_proj = tract_gdf.to_crs(epsg=3857)
+    centroids_proj = tracts_proj.centroid
+    centroids = gpd.GeoSeries(centroids_proj, crs=3857).to_crs(epsg=4326)
+
+    # Precompute brewery nodes once (faster)
+    brewery_nodes = [
+        ox.nearest_nodes(G, geom.x, geom.y)
+        for geom in brewery_gdf.geometry
+    ]
+
     counts = []
 
-    for geom in tract_gdf.centroid:
+    for geom in centroids:
         try:
             source = ox.nearest_nodes(G, geom.x, geom.y)
-        except:
+        except Exception:
             counts.append(0)
             continue
 
         subgraph = ox.truncate.truncate_graph_dist(G, source, radius)
         reachable_nodes = set(subgraph.nodes)
 
-        # reachable nodes
-        bcount = 0
-        for geom2 in brewery_gdf.geometry:
-            bnode = ox.nearest_nodes(G, geom2.x, geom2.y)
-            if bnode in reachable_nodes:
-                bcount += 1
-
+        # Count reachable breweries
+        bcount = sum(1 for bnode in brewery_nodes if bnode in reachable_nodes)
         counts.append(bcount)
 
     tract_gdf[f"breweries_within_{radius}m"] = counts
