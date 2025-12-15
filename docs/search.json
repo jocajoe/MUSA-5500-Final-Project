@@ -4,7 +4,35 @@
     "href": "pages/results.html",
     "title": "Results",
     "section": "",
-    "text": "Results\nSummaries, charts, and interactive visualizations."
+    "text": "Median home values show clear geographic clustering across Philadelphia, with higher values concentrated in central and river-adjacent neighborhoods.\n\n\n\nBrewery accessibility also varies spatially. Many of the closest tracts to breweries appear in areas with higher home values, suggesting potential co-location of amenities and housing markets."
+  },
+  {
+    "objectID": "pages/results.html#spatial-patterns",
+    "href": "pages/results.html#spatial-patterns",
+    "title": "Results",
+    "section": "",
+    "text": "Median home values show clear geographic clustering across Philadelphia, with higher values concentrated in central and river-adjacent neighborhoods.\n\n\n\nBrewery accessibility also varies spatially. Many of the closest tracts to breweries appear in areas with higher home values, suggesting potential co-location of amenities and housing markets."
+  },
+  {
+    "objectID": "pages/results.html#association-between-brewery-proximity-and-home-values",
+    "href": "pages/results.html#association-between-brewery-proximity-and-home-values",
+    "title": "Results",
+    "section": "Association Between Brewery Proximity and Home Values",
+    "text": "Association Between Brewery Proximity and Home Values\nAcross census tracts, distance to the nearest brewery is moderately associated with median home values. Tracts closer to breweries tend to have higher median home values ((r )). A simple linear model with distance as the only predictor produces (R^2 ), indicating brewery proximity explains a meaningful but incomplete share of tract-level variation in home values.\n\nMedian Home Value vs. Distance to Nearest Brewery"
+  },
+  {
+    "objectID": "pages/results.html#walkability-threshold-comparison",
+    "href": "pages/results.html#walkability-threshold-comparison",
+    "title": "Results",
+    "section": "Walkability Threshold Comparison",
+    "text": "Walkability Threshold Comparison\nTo provide an interpretable accessibility measure, distance was also translated into a walkability threshold. Tracts within 800 meters of a brewery tend to have higher median home values on average, though the distributions overlap.\n\nHome Values by Brewery Walkability (800m)"
+  },
+  {
+    "objectID": "pages/results.html#interpretation",
+    "href": "pages/results.html#interpretation",
+    "title": "Results",
+    "section": "Interpretation",
+    "text": "Interpretation\nOverall, breweries appear to co-locate with higher-value neighborhoods, but the relationship is not deterministic. Brewery proximity likely reflects broader neighborhood amenity and development patterns rather than acting as a direct causal driver of housing prices."
   },
   {
     "objectID": "pages/conclusion.html",
@@ -179,55 +207,104 @@
     "href": "notebooks/eda_and_visualization.html",
     "title": "03 — Exploratory Analysis & Visualization",
     "section": "",
-    "text": "This notebook explores spatial patterns in brewery accessibility and median home values across Philadelphia census tracts. Using the cleaned, tract-level dataset created in Notebook 2, we examine geographic variation, bivariate relationships, and accessibility threshold effects.\nimport pandas as pd\nimport geopandas as gpd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\nplt.style.use(\"seaborn-v0_8\")\ngdf = gpd.read_file(\"../data/processed/philly_tracts_final.geojson\")\ngdf.columns\ngdf.shape\n\n(376, 22)"
+    "text": "This notebook explores spatial patterns in brewery accessibility and median home values across Philadelphia census tracts. Using the cleaned, tract-level dataset created in Notebook 2, we examine geographic variation, bivariate relationships, and accessibility threshold effects.\nimport pandas as pd\nimport geopandas as gpd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\nos.makedirs(\"../assets/figures\", exist_ok=True)\nplt.style.use(\"seaborn-v0_8\")\ngdf = gpd.read_file(\"../data/processed/philly_tracts_final.geojson\")\ngdf.columns\ngdf.shape\n\n(376, 22)"
   },
   {
     "objectID": "notebooks/eda_and_visualization.html#median-home-values-choropleth",
     "href": "notebooks/eda_and_visualization.html#median-home-values-choropleth",
     "title": "03 — Exploratory Analysis & Visualization",
     "section": "Median home values choropleth",
-    "text": "Median home values choropleth\n\nfig, ax = plt.subplots(1, 1, figsize=(8, 8))\n\ngdf.plot(\n    column=\"med_home_val\",\n    cmap=\"viridis\",\n    linewidth=0,\n    legend=True,\n    ax=ax\n)\n\nax.set_title(\"Median Home Value by Census Tract\")\nax.axis(\"off\")\nplt.show()"
+    "text": "Median home values choropleth\n\nfig, ax = plt.subplots(1, 1, figsize=(8, 8))\n\ngdf.plot(\n    column=\"med_home_val\",\n    cmap=\"viridis\",\n    linewidth=0,\n    legend=True,\n    ax=ax\n)\n\nax.set_title(\"Median Home Value by Census Tract\")\nax.axis(\"off\")\n\nplt.savefig(\n    \"../assets/figures/map_med_home_val.png\",\n    dpi=200,\n    bbox_inches=\"tight\"\n)\nplt.show()"
   },
   {
     "objectID": "notebooks/eda_and_visualization.html#distance-to-nearest-brewery",
     "href": "notebooks/eda_and_visualization.html#distance-to-nearest-brewery",
     "title": "03 — Exploratory Analysis & Visualization",
     "section": "Distance to nearest brewery",
-    "text": "Distance to nearest brewery\n\nfig, ax = plt.subplots(1, 1, figsize=(8, 8))\n\ngdf.plot(\n    column=\"dist_to_brewery_m\",\n    cmap=\"magma_r\",\n    linewidth=0,\n    legend=True,\n    ax=ax\n)\n\nax.set_title(\"Distance to Nearest Brewery (meters)\")\nax.axis(\"off\")\nplt.show()"
+    "text": "Distance to nearest brewery\n\nfig, ax = plt.subplots(1, 1, figsize=(8, 8))\n\ngdf.plot(\n    column=\"dist_to_brewery_m\",\n    cmap=\"magma_r\",\n    linewidth=0,\n    legend=True,\n    ax=ax\n)\n\nax.set_title(\"Distance to Nearest Brewery (meters)\")\nax.axis(\"off\")\n\nplt.savefig(\n    \"../assets/figures/map_dist_to_brewery.png\",\n    dpi=200,\n    bbox_inches=\"tight\"\n)\nplt.show()"
   },
   {
     "objectID": "notebooks/eda_and_visualization.html#non-spatial-eda-distributions",
     "href": "notebooks/eda_and_visualization.html#non-spatial-eda-distributions",
     "title": "03 — Exploratory Analysis & Visualization",
     "section": "Non Spatial EDA (Distributions)",
-    "text": "Non Spatial EDA (Distributions)\n\nsns.histplot(gdf[\"med_home_val\"], bins=40)\nplt.title(\"Distribution of Median Home Values\")\nplt.xlabel(\"Median Home Value ($)\")\nplt.show()\n\n\n\n\n\n\n\n\n\nsns.histplot(gdf[\"dist_to_brewery_m\"], bins=40)\nplt.title(\"Distribution of Distance to Nearest Brewery\")\nplt.xlabel(\"Distance (meters)\")\nplt.show()"
+    "text": "Non Spatial EDA (Distributions)\n\nsns.histplot(gdf[\"med_home_val\"], bins=40)\nplt.title(\"Distribution of Median Home Values\")\nplt.xlabel(\"Median Home Value ($)\")\n\nplt.savefig(\n    \"../docs/assets/figures/hist_med_home_val.png\",\n    dpi=200,\n    bbox_inches=\"tight\"\n)\nplt.show()\n\n\n\n\n\n\n\n\n\n\nsns.histplot(gdf[\"dist_to_brewery_m\"], bins=40)\nplt.title(\"Distribution of Distance to Nearest Brewery\")\nplt.xlabel(\"Distance (meters)\")\n\nplt.savefig(\n    \"../docs/assets/figures/hist_dist_to_brewery.png\",\n    dpi=200,\n    bbox_inches=\"tight\"\n)\nplt.show()"
   },
   {
     "objectID": "notebooks/eda_and_visualization.html#bivariate-relationships",
     "href": "notebooks/eda_and_visualization.html#bivariate-relationships",
     "title": "03 — Exploratory Analysis & Visualization",
     "section": "Bivariate Relationships",
-    "text": "Bivariate Relationships\n\nsns.scatterplot(\n    data=gdf,\n    x=\"dist_to_brewery_m\",\n    y=\"med_home_val\",\n    alpha=0.6\n)\n\nplt.title(\"Median Home Value vs Distance to Nearest Brewery\")\nplt.xlabel(\"Distance to Nearest Brewery (m)\")\nplt.ylabel(\"Median Home Value ($)\")\nplt.show()\n\n\n\n\n\n\n\n\n\nsns.regplot(\n    data=gdf,\n    x=\"dist_to_brewery_m\",\n    y=\"med_home_val\",\n    scatter_kws={\"alpha\": 0.4},\n    line_kws={\"color\": \"red\"},\n    lowess=True\n)\nplt.show()"
+    "text": "Bivariate Relationships\n\nsns.scatterplot(\n    data=gdf,\n    x=\"dist_to_brewery_m\",\n    y=\"med_home_val\",\n    alpha=0.6\n)\n\nplt.title(\"Median Home Value vs Distance to Nearest Brewery\")\nplt.xlabel(\"Distance to Nearest Brewery (meters)\")\nplt.ylabel(\"Median Home Value ($)\")\n\nplt.savefig(\n    \"../assets/figures/scatter_home_vs_dist.png\",\n    dpi=200,\n    bbox_inches=\"tight\"\n)\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\nsns.regplot(\n    data=gdf,\n    x=\"dist_to_brewery_m\",\n    y=\"med_home_val\",\n    scatter_kws={\"alpha\": 0.4},\n    line_kws={\"color\": \"red\"},\n    lowess=True\n)\n\nplt.title(\"LOWESS Fit: Home Value vs Brewery Distance\")\n\nplt.savefig(\n    \"../docs/assets/figures/lowess_home_vs_dist.png\",\n    dpi=200,\n    bbox_inches=\"tight\"\n)\nplt.show()"
   },
   {
     "objectID": "notebooks/eda_and_visualization.html#threshhold-analysis",
     "href": "notebooks/eda_and_visualization.html#threshhold-analysis",
     "title": "03 — Exploratory Analysis & Visualization",
     "section": "Threshhold analysis",
-    "text": "Threshhold analysis\n\ngdf[\"walkable_800m\"] = gdf[\"brewery_within_800m\"].map({1: \"≤800m\", 0: \"&gt;800m\"})\n\n\nsns.boxplot(\n    data=gdf,\n    x=\"walkable_800m\",\n    y=\"med_home_val\"\n)\n\nplt.title(\"Median Home Value by Brewery Walkability (800m)\")\nplt.xlabel(\"Brewery Accessibility\")\nplt.ylabel(\"Median Home Value ($)\")\nplt.show()"
+    "text": "Threshhold analysis\n\ngdf[\"walkable_800m\"] = gdf[\"brewery_within_800m\"].map({1: \"≤800m\", 0: \"&gt;800m\"})\n\n\ngdf[\"walkable_800m\"] = gdf[\"brewery_within_800m\"].map({1: \"≤800m\", 0: \"&gt;800m\"})\n\nsns.boxplot(\n    data=gdf,\n    x=\"walkable_800m\",\n    y=\"med_home_val\"\n)\n\nplt.title(\"Median Home Value by Brewery Walkability (800m)\")\nplt.xlabel(\"Brewery Accessibility\")\nplt.ylabel(\"Median Home Value ($)\")\n\nplt.savefig(\n    \"../assets/figures/box_home_by_800m.png\",\n    dpi=200,\n    bbox_inches=\"tight\"\n)\nplt.show()"
   },
   {
     "objectID": "notebooks/eda_and_visualization.html#brewery-intensity-effects",
     "href": "notebooks/eda_and_visualization.html#brewery-intensity-effects",
     "title": "03 — Exploratory Analysis & Visualization",
     "section": "Brewery intensity effects",
-    "text": "Brewery intensity effects\n\nsns.scatterplot(\n    data=gdf,\n    x=\"brewery_density\",\n    y=\"med_home_val\",\n    alpha=0.6\n)\n\nplt.title(\"Median Home Value vs Brewery Density\")\nplt.xlabel(\"Breweries per km²\")\nplt.ylabel(\"Median Home Value ($)\")\nplt.show()\n\n\n\n\n\n\n\n\n\n## Interactive Map: Breweries and Nearby Home Values\n\n\nimport folium\nimport numpy as np\n\n# Load processed tracts\ngdf = gpd.read_file(\"../data/processed/philly_tracts_final.geojson\")\n\n# Load breweries\ngdf_brew = gpd.read_file(\"../data/raw/breweries_philly.geojson\")\ngdf_brew = gdf_brew.dropna(subset=[\"geometry\"])\ngdf_brew = gdf_brew[gdf_brew[\"brewery_type\"].isin([\"micro\", \"brewpub\", \"regional\"])]\n\n# Ensure CRS\ngdf = gdf.to_crs(4326)\ngdf_brew = gdf_brew.to_crs(4326)\n\n\n# Project to meters for buffering\ntracts_m = gdf.to_crs(3857).copy()\nbrews_m = gdf_brew.to_crs(3857).copy()\n\n# Use tract centroids for walkability\ntracts_m[\"centroid\"] = tracts_m.geometry.centroid\n\nR = 800  # walkable radius in meters\n\nbrew_stats = []\n\nfor idx, brew in brews_m.iterrows():\n    buf = brew.geometry.buffer(R)\n    nearby = tracts_m[tracts_m[\"centroid\"].within(buf)]\n\n    brew_stats.append({\n        \"brew_index\": idx,\n        \"n_tracts_800m\": len(nearby),\n        \"median_home_800m\": nearby[\"med_home_val\"].median(),\n        \"mean_home_800m\": nearby[\"med_home_val\"].mean(),\n    })\n\nbrew_stats = (\n    gpd.GeoDataFrame(brew_stats)\n    .set_index(\"brew_index\")\n)\n\ngdf_brew = gdf_brew.join(brew_stats)\n\n\n# Initialize map\nm = folium.Map(\n    location=[39.9526, -75.1652],\n    zoom_start=12,\n    tiles=\"CartoDB positron\"\n)\n\n# Add tract-level choropleth (median home value)\nfolium.Choropleth(\n    geo_data=gdf,\n    data=gdf,\n    columns=[\"GEOID\", \"med_home_val\"],\n    key_on=\"feature.properties.GEOID\",\n    fill_color=\"YlGnBu\",\n    fill_opacity=0.6,\n    line_opacity=0.1,\n    nan_fill_color=\"lightgray\",\n    legend_name=\"Median Home Value ($)\"\n).add_to(m)\n\n&lt;folium.features.Choropleth at 0x256b1e65c00&gt;\n\n\n\nfor _, row in gdf_brew.iterrows():\n    lat, lon = row.geometry.y, row.geometry.x\n\n    popup_html = f\"\"\"\n    &lt;b&gt;{row.get('name','Brewery')}&lt;/b&gt;&lt;br&gt;\n    Type: {row.get('brewery_type','')}&lt;br&gt;&lt;br&gt;\n    &lt;b&gt;Within 800m&lt;/b&gt;&lt;br&gt;\n    Tracts: {int(row.get('n_tracts_800m',0))}&lt;br&gt;\n    Median home value: ${row.get('median_home_800m',np.nan):,.0f}&lt;br&gt;\n    Mean home value: ${row.get('mean_home_800m',np.nan):,.0f}\n    \"\"\"\n\n    folium.CircleMarker(\n        location=[lat, lon],\n        radius=5,\n        fill=True,\n        fill_opacity=0.85,\n        color=\"#8c2d04\",\n        tooltip=row.get(\"name\",\"Brewery\"),\n        popup=folium.Popup(popup_html, max_width=300)\n    ).add_to(m)\n\n\nm\nm.save(\"brewery_home_value_interactive.html\")\n\n\ngdf[[\"med_home_val\", \"dist_to_brewery_m\", \"brewery_density\", \"brewery_count\"]].corr()\n\n\n\n\n\n\n\n\nmed_home_val\ndist_to_brewery_m\nbrewery_density\nbrewery_count\n\n\n\n\nmed_home_val\n1.000000\n-0.392675\n0.137110\n0.143154\n\n\ndist_to_brewery_m\n-0.392675\n1.000000\n-0.234798\n-0.259107\n\n\nbrewery_density\n0.137110\n-0.234798\n1.000000\n0.885110\n\n\nbrewery_count\n0.143154\n-0.259107\n0.885110\n1.000000\n\n\n\n\n\n\n\n\nimport statsmodels.api as sm\n\ndf = gdf.dropna(subset=[\"med_home_val\", \"dist_to_brewery_m\"])\n\nX = sm.add_constant(df[\"dist_to_brewery_m\"])\ny = df[\"med_home_val\"]\n\nmodel = sm.OLS(y, X).fit()\nmodel.rsquared\n\n0.15419401468718752"
+    "text": "Brewery intensity effects\n\nsns.scatterplot(\n    data=gdf,\n    x=\"brewery_density\",\n    y=\"med_home_val\",\n    alpha=0.6\n)\n\nplt.title(\"Median Home Value vs Brewery Density\")\nplt.xlabel(\"Breweries per km²\")\nplt.ylabel(\"Median Home Value ($)\")\n\nplt.savefig(\n    \"../docs/assets/figures/scatter_home_vs_density.png\",\n    dpi=200,\n    bbox_inches=\"tight\"\n)\nplt.show()\n\n\n\n\n\n\n\n\n\n## Interactive Map: Breweries and Nearby Home Values\n\n\nimport folium\nimport numpy as np\n\n# Load processed tracts\ngdf = gpd.read_file(\"../data/processed/philly_tracts_final.geojson\")\n\n# Load breweries\ngdf_brew = gpd.read_file(\"../data/raw/breweries_philly.geojson\")\ngdf_brew = gdf_brew.dropna(subset=[\"geometry\"])\ngdf_brew = gdf_brew[gdf_brew[\"brewery_type\"].isin([\"micro\", \"brewpub\", \"regional\"])]\n\n# Ensure CRS\ngdf = gdf.to_crs(4326)\ngdf_brew = gdf_brew.to_crs(4326)\n\n\n# Project to meters for buffering\ntracts_m = gdf.to_crs(3857).copy()\nbrews_m = gdf_brew.to_crs(3857).copy()\n\n# Use tract centroids for walkability\ntracts_m[\"centroid\"] = tracts_m.geometry.centroid\n\nR = 800  # walkable radius in meters\n\nbrew_stats = []\n\nfor idx, brew in brews_m.iterrows():\n    buf = brew.geometry.buffer(R)\n    nearby = tracts_m[tracts_m[\"centroid\"].within(buf)]\n\n    brew_stats.append({\n        \"brew_index\": idx,\n        \"n_tracts_800m\": len(nearby),\n        \"median_home_800m\": nearby[\"med_home_val\"].median(),\n        \"mean_home_800m\": nearby[\"med_home_val\"].mean(),\n    })\n\nbrew_stats = (\n    gpd.GeoDataFrame(brew_stats)\n    .set_index(\"brew_index\")\n)\n\ngdf_brew = gdf_brew.join(brew_stats)\n\n\n# Initialize map\nm = folium.Map(\n    location=[39.9526, -75.1652],\n    zoom_start=12,\n    tiles=\"CartoDB positron\"\n)\n\n# Add tract-level choropleth (median home value)\nfolium.Choropleth(\n    geo_data=gdf,\n    data=gdf,\n    columns=[\"GEOID\", \"med_home_val\"],\n    key_on=\"feature.properties.GEOID\",\n    fill_color=\"YlGnBu\",\n    fill_opacity=0.6,\n    line_opacity=0.1,\n    nan_fill_color=\"lightgray\",\n    legend_name=\"Median Home Value ($)\"\n).add_to(m)\n\n&lt;folium.features.Choropleth at 0x25319fcbb50&gt;\n\n\n\nfor _, row in gdf_brew.iterrows():\n    lat, lon = row.geometry.y, row.geometry.x\n\n    popup_html = f\"\"\"\n    &lt;b&gt;{row.get('name','Brewery')}&lt;/b&gt;&lt;br&gt;\n    Type: {row.get('brewery_type','')}&lt;br&gt;&lt;br&gt;\n    &lt;b&gt;Within 800m&lt;/b&gt;&lt;br&gt;\n    Tracts: {int(row.get('n_tracts_800m',0))}&lt;br&gt;\n    Median home value: ${row.get('median_home_800m',np.nan):,.0f}&lt;br&gt;\n    Mean home value: ${row.get('mean_home_800m',np.nan):,.0f}\n    \"\"\"\n\n    folium.CircleMarker(\n        location=[lat, lon],\n        radius=5,\n        fill=True,\n        fill_opacity=0.85,\n        color=\"#8c2d04\",\n        tooltip=row.get(\"name\",\"Brewery\"),\n        popup=folium.Popup(popup_html, max_width=300)\n    ).add_to(m)\n\n\nm\nm.save(\"brewery_home_value_interactive.html\")\n\n\ngdf[[\"med_home_val\", \"dist_to_brewery_m\", \"brewery_density\", \"brewery_count\"]].corr()\n\n\n\n\n\n\n\n\nmed_home_val\ndist_to_brewery_m\nbrewery_density\nbrewery_count\n\n\n\n\nmed_home_val\n1.000000\n-0.392675\n0.137110\n0.143154\n\n\ndist_to_brewery_m\n-0.392675\n1.000000\n-0.234798\n-0.259107\n\n\nbrewery_density\n0.137110\n-0.234798\n1.000000\n0.885110\n\n\nbrewery_count\n0.143154\n-0.259107\n0.885110\n1.000000\n\n\n\n\n\n\n\n\nimport statsmodels.api as sm\n\ndf = gdf.dropna(subset=[\"med_home_val\", \"dist_to_brewery_m\"])\n\nX = sm.add_constant(df[\"dist_to_brewery_m\"])\ny = df[\"med_home_val\"]\n\nmodel = sm.OLS(y, X).fit()\nmodel.rsquared\n\n0.15419401468718752\n\n\n\ngdf.columns\n\nIndex(['STATEFP', 'COUNTYFP', 'TRACTCE', 'GEOID', 'NAME', 'NAMELSAD', 'MTFCC',\n       'FUNCSTAT', 'ALAND', 'AWATER', 'INTPTLAT', 'INTPTLON', 'med_home_val',\n       'brewery_count', 'area_km2', 'brewery_density', 'dist_to_brewery_m',\n       'dist_to_brewery_km', 'dist_to_brewery_min', 'brewery_within_800m',\n       'brewery_within_1200m', 'geometry'],\n      dtype='object')"
   },
   {
     "objectID": "pages/methodology.html",
     "href": "pages/methodology.html",
     "title": "Methodology",
     "section": "",
-    "text": "Methodology\nDescribe your data collection, cleaning, and analysis steps here."
+    "text": "This project builds a Philadelphia census-tract dataset that combines brewery locations with housing market indicators to explore whether brewery accessibility is associated with median home values. The workflow follows a reproducible pipeline:\n\nCollect brewery locations from a public API\nRetrieve tract-level median home value from the American Community Survey (ACS)\nLoad census tract geometries for Philadelphia County\nEngineer tract-level brewery metrics and accessibility features\nVisualize spatial patterns using static plots and an interactive web map"
+  },
+  {
+    "objectID": "pages/methodology.html#overview",
+    "href": "pages/methodology.html#overview",
+    "title": "Methodology",
+    "section": "",
+    "text": "This project builds a Philadelphia census-tract dataset that combines brewery locations with housing market indicators to explore whether brewery accessibility is associated with median home values. The workflow follows a reproducible pipeline:\n\nCollect brewery locations from a public API\nRetrieve tract-level median home value from the American Community Survey (ACS)\nLoad census tract geometries for Philadelphia County\nEngineer tract-level brewery metrics and accessibility features\nVisualize spatial patterns using static plots and an interactive web map"
+  },
+  {
+    "objectID": "pages/methodology.html#study-area-and-unit-of-analysis",
+    "href": "pages/methodology.html#study-area-and-unit-of-analysis",
+    "title": "Methodology",
+    "section": "Study Area and Unit of Analysis",
+    "text": "Study Area and Unit of Analysis\nThe study area is Philadelphia County, Pennsylvania. The unit of analysis is the census tract, which provides a neighborhood-scale geography suitable for comparing housing values and amenity accessibility."
+  },
+  {
+    "objectID": "pages/methodology.html#data-sources",
+    "href": "pages/methodology.html#data-sources",
+    "title": "Methodology",
+    "section": "Data Sources",
+    "text": "Data Sources\n\nBrewery Locations (Open Brewery DB)\nBrewery point locations were collected using the Open Brewery DB API. Returned records include the brewery name, type, and geographic coordinates. The analysis focuses on brewery types most relevant to local access and neighborhood-scale amenities (e.g., microbreweries, brewpubs, and regionals), and drops records missing valid coordinates.\nKey fields used - Brewery name - Brewery type - Latitude / longitude (point geometry)\n\n\nMedian Home Value (ACS)\nMedian home values were sourced from the American Community Survey (ACS) at the census tract level. ACS values were joined to tract geometries using the tract GEOID. Missing or invalid values were treated as missing.\nKey variable - med_home_val (tract-level median home value)\n\n\nCensus Tract Boundaries\nCensus tract geometries were obtained from the U.S. Census Bureau’s TIGER/Line products and filtered to Philadelphia County. These tracts provide the spatial framework for both aggregation and mapping."
+  },
+  {
+    "objectID": "pages/methodology.html#data-cleaning-and-harmonization",
+    "href": "pages/methodology.html#data-cleaning-and-harmonization",
+    "title": "Methodology",
+    "section": "Data Cleaning and Harmonization",
+    "text": "Data Cleaning and Harmonization\nSeveral preprocessing steps were applied across datasets:\n\nCoordinate reference systems (CRS): brewery points and tract geometries were stored in a geographic CRS (EPSG:4326) for consistency and web mapping.\nValid geometries: tracts with missing or invalid geometry were removed.\nJoin keys: GEOID was cast to a consistent string type to ensure reliable joins."
+  },
+  {
+    "objectID": "pages/methodology.html#spatial-operations-and-feature-engineering",
+    "href": "pages/methodology.html#spatial-operations-and-feature-engineering",
+    "title": "Methodology",
+    "section": "Spatial Operations and Feature Engineering",
+    "text": "Spatial Operations and Feature Engineering\n\nAssigning Breweries to Tracts\nBreweries were assigned to census tracts using a point-in-polygon spatial join. This enabled tract-level aggregation of brewery presence.\nFrom this join, the following features were created:\n\nbrewery_count: number of breweries within each tract\narea_km2: tract area in square kilometers\nbrewery_density: breweries per km², computed as:\n\n[ = ]\nTract area was calculated in a projected coordinate system to ensure accurate measurement.\n\n\nBrewery Accessibility via Distance to Nearest Brewery\nTo measure accessibility, each tract was represented by its centroid and paired with the nearest brewery using straight-line distance (Euclidean distance) computed in meters using projected coordinates.\nOutputs include:\n\ndist_to_brewery_m: distance to the nearest brewery (meters)\ndist_to_brewery_km: distance to the nearest brewery (kilometers)\ndist_to_brewery_min: an approximate walking-time proxy derived from distance\nbrewery_within_800m: indicator for whether a tract is within 800 meters of a brewery\nbrewery_within_1200m: indicator for whether a tract is within 1200 meters of a brewery\n\nThese threshold variables provide an interpretable proxy for “walkable access.”"
+  },
+  {
+    "objectID": "pages/methodology.html#visualization-approach",
+    "href": "pages/methodology.html#visualization-approach",
+    "title": "Methodology",
+    "section": "Visualization Approach",
+    "text": "Visualization Approach\nTwo types of outputs were produced:\n\nStatic maps and plots for exploratory analysis and results reporting, including choropleths, scatterplots, and group comparisons.\nAn interactive web map (Folium/Leaflet) for the project homepage, displaying:\n\nmedian home values by tract as a choropleth layer\nbrewery locations as clickable markers\nsummary statistics for nearby tracts within a walkable radius"
+  },
+  {
+    "objectID": "pages/methodology.html#limitations",
+    "href": "pages/methodology.html#limitations",
+    "title": "Methodology",
+    "section": "Limitations",
+    "text": "Limitations\nThis analysis is designed to measure association rather than causation. Key limitations include:\n\nStraight-line distance: dist_to_brewery_m is not network-based walking distance and should be interpreted as an accessibility proxy.\nTract centroid approximation: centroids may not represent where residents live within each tract.\nOmitted variables: home values reflect many drivers (e.g., income, transit access, zoning, school quality). Brewery proximity may correlate with these broader neighborhood characteristics rather than independently driving prices.\n\nDespite these limitations, the pipeline provides a transparent and reproducible framework for comparing neighborhood-scale amenity accessibility and housing indicators."
   }
 ]

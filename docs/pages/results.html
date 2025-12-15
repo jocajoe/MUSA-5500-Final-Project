@@ -123,7 +123,20 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#results" id="toc-results" class="nav-link active" data-scroll-target="#results">Results</a></li>
+  <li><a href="#spatial-patterns" id="toc-spatial-patterns" class="nav-link active" data-scroll-target="#spatial-patterns">Spatial Patterns</a>
+  <ul class="collapse">
+  <li><a href="#median-home-value-by-census-tract" id="toc-median-home-value-by-census-tract" class="nav-link" data-scroll-target="#median-home-value-by-census-tract">Median Home Value by Census Tract</a></li>
+  <li><a href="#distance-to-nearest-brewery" id="toc-distance-to-nearest-brewery" class="nav-link" data-scroll-target="#distance-to-nearest-brewery">Distance to Nearest Brewery</a></li>
+  </ul></li>
+  <li><a href="#association-between-brewery-proximity-and-home-values" id="toc-association-between-brewery-proximity-and-home-values" class="nav-link" data-scroll-target="#association-between-brewery-proximity-and-home-values">Association Between Brewery Proximity and Home Values</a>
+  <ul class="collapse">
+  <li><a href="#median-home-value-vs.-distance-to-nearest-brewery" id="toc-median-home-value-vs.-distance-to-nearest-brewery" class="nav-link" data-scroll-target="#median-home-value-vs.-distance-to-nearest-brewery">Median Home Value vs.&nbsp;Distance to Nearest Brewery</a></li>
+  </ul></li>
+  <li><a href="#walkability-threshold-comparison" id="toc-walkability-threshold-comparison" class="nav-link" data-scroll-target="#walkability-threshold-comparison">Walkability Threshold Comparison</a>
+  <ul class="collapse">
+  <li><a href="#home-values-by-brewery-walkability-800m" id="toc-home-values-by-brewery-walkability-800m" class="nav-link" data-scroll-target="#home-values-by-brewery-walkability-800m">Home Values by Brewery Walkability (800m)</a></li>
+  </ul></li>
+  <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation">Interpretation</a></li>
   </ul>
 </nav>
     </div>
@@ -149,9 +162,38 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="results" class="level1">
-<h1>Results</h1>
-<p>Summaries, charts, and interactive visualizations.</p>
+<section id="spatial-patterns" class="level2">
+<h2 class="anchored" data-anchor-id="spatial-patterns">Spatial Patterns</h2>
+<p>Median home values show clear geographic clustering across Philadelphia, with higher values concentrated in central and river-adjacent neighborhoods.</p>
+<section id="median-home-value-by-census-tract" class="level3">
+<h3 class="anchored" data-anchor-id="median-home-value-by-census-tract">Median Home Value by Census Tract</h3>
+<p><img src="../assets/figures/map_med_home_val.png" class="img-fluid" style="width:100.0%" alt="Choropleth map of median home values by census tract in Philadelphia"></p>
+<p>Brewery accessibility also varies spatially. Many of the closest tracts to breweries appear in areas with higher home values, suggesting potential co-location of amenities and housing markets.</p>
+</section>
+<section id="distance-to-nearest-brewery" class="level3">
+<h3 class="anchored" data-anchor-id="distance-to-nearest-brewery">Distance to Nearest Brewery</h3>
+<p><img src="../assets/figures/map_dist_to_brewery.png" class="img-fluid" style="width:100.0%" alt="Choropleth map of distance to nearest brewery (meters) by census tract"></p>
+</section>
+</section>
+<section id="association-between-brewery-proximity-and-home-values" class="level2">
+<h2 class="anchored" data-anchor-id="association-between-brewery-proximity-and-home-values">Association Between Brewery Proximity and Home Values</h2>
+<p>Across census tracts, distance to the nearest brewery is moderately associated with median home values. Tracts closer to breweries tend to have higher median home values ((r )). A simple linear model with distance as the only predictor produces (R^2 ), indicating brewery proximity explains a meaningful but incomplete share of tract-level variation in home values.</p>
+<section id="median-home-value-vs.-distance-to-nearest-brewery" class="level3">
+<h3 class="anchored" data-anchor-id="median-home-value-vs.-distance-to-nearest-brewery">Median Home Value vs.&nbsp;Distance to Nearest Brewery</h3>
+<p><img src="../assets/figures/scatter_home_vs_dist.png" class="img-fluid" style="width:90.0%" alt="Scatterplot of median home value versus distance to the nearest brewery"></p>
+</section>
+</section>
+<section id="walkability-threshold-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="walkability-threshold-comparison">Walkability Threshold Comparison</h2>
+<p>To provide an interpretable accessibility measure, distance was also translated into a walkability threshold. Tracts within 800 meters of a brewery tend to have higher median home values on average, though the distributions overlap.</p>
+<section id="home-values-by-brewery-walkability-800m" class="level3">
+<h3 class="anchored" data-anchor-id="home-values-by-brewery-walkability-800m">Home Values by Brewery Walkability (800m)</h3>
+<p><img src="../assets/figures/box_home_by_800m.png" class="img-fluid" style="width:80.0%" alt="Boxplot comparing median home value for tracts within 800 meters of a brewery versus farther tracts"></p>
+</section>
+</section>
+<section id="interpretation" class="level2">
+<h2 class="anchored" data-anchor-id="interpretation">Interpretation</h2>
+<p>Overall, breweries appear to co-locate with higher-value neighborhoods, but the relationship is not deterministic. Brewery proximity likely reflects broader neighborhood amenity and development patterns rather than acting as a direct causal driver of housing prices.</p>
 
 
 </section>

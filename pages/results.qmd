@@ -2,6 +2,46 @@
 title: "Results"
 ---
 
-# Results
+## Spatial Patterns
 
-Summaries, charts, and interactive visualizations.
+Median home values show clear geographic clustering across Philadelphia, with higher values
+concentrated in central and river-adjacent neighborhoods.
+
+### Median Home Value by Census Tract
+
+![](../assets/figures/map_med_home_val.png){fig-alt="Choropleth map of median home values by census tract in Philadelphia" width=100%}
+
+Brewery accessibility also varies spatially. Many of the closest tracts to breweries appear
+in areas with higher home values, suggesting potential co-location of amenities and housing markets.
+
+### Distance to Nearest Brewery
+
+![](../assets/figures/map_dist_to_brewery.png){fig-alt="Choropleth map of distance to nearest brewery (meters) by census tract" width=100%}
+
+## Association Between Brewery Proximity and Home Values
+
+Across census tracts, distance to the nearest brewery is moderately associated with median
+home values. Tracts closer to breweries tend to have higher median home values
+(\(r \approx -0.39\)). A simple linear model with distance as the only predictor produces
+\(R^2 \approx 0.154\), indicating brewery proximity explains a meaningful but incomplete
+share of tract-level variation in home values.
+
+### Median Home Value vs. Distance to Nearest Brewery
+
+![](../assets/figures/scatter_home_vs_dist.png){fig-alt="Scatterplot of median home value versus distance to the nearest brewery" width=90%}
+
+## Walkability Threshold Comparison
+
+To provide an interpretable accessibility measure, distance was also translated into a
+walkability threshold. Tracts within 800 meters of a brewery tend to have higher median
+home values on average, though the distributions overlap.
+
+### Home Values by Brewery Walkability (800m)
+
+![](../assets/figures/box_home_by_800m.png){fig-alt="Boxplot comparing median home value for tracts within 800 meters of a brewery versus farther tracts" width=80%}
+
+## Interpretation
+
+Overall, breweries appear to co-locate with higher-value neighborhoods, but the relationship
+is not deterministic. Brewery proximity likely reflects broader neighborhood amenity and
+development patterns rather than acting as a direct causal driver of housing prices.

@@ -2,6 +2,119 @@
 title: "Methodology"
 ---
 
-# Methodology
+## Overview
 
-Describe your data collection, cleaning, and analysis steps here.
+This project builds a Philadelphia census-tract dataset that combines brewery locations
+with housing market indicators to explore whether brewery accessibility is associated with
+median home values. The workflow follows a reproducible pipeline:
+
+1. Collect brewery locations from a public API
+2. Retrieve tract-level median home value from the American Community Survey (ACS)
+3. Load census tract geometries for Philadelphia County
+4. Engineer tract-level brewery metrics and accessibility features
+5. Visualize spatial patterns using static plots and an interactive web map
+
+## Study Area and Unit of Analysis
+
+The study area is **Philadelphia County, Pennsylvania**. The unit of analysis is the
+**census tract**, which provides a neighborhood-scale geography suitable for comparing
+housing values and amenity accessibility.
+
+## Data Sources
+
+### Brewery Locations (Open Brewery DB)
+
+Brewery point locations were collected using the **Open Brewery DB** API. Returned records
+include the brewery name, type, and geographic coordinates. The analysis focuses on brewery
+types most relevant to local access and neighborhood-scale amenities (e.g., microbreweries,
+brewpubs, and regionals), and drops records missing valid coordinates.
+
+**Key fields used**
+- Brewery name
+- Brewery type
+- Latitude / longitude (point geometry)
+
+### Median Home Value (ACS)
+
+Median home values were sourced from the **American Community Survey (ACS)** at the census
+tract level. ACS values were joined to tract geometries using the tract `GEOID`. Missing
+or invalid values were treated as missing.
+
+**Key variable**
+- `med_home_val` (tract-level median home value)
+
+### Census Tract Boundaries
+
+Census tract geometries were obtained from the U.S. Census Bureau’s TIGER/Line products
+and filtered to Philadelphia County. These tracts provide the spatial framework for both
+aggregation and mapping.
+
+## Data Cleaning and Harmonization
+
+Several preprocessing steps were applied across datasets:
+
+- **Coordinate reference systems (CRS):** brewery points and tract geometries were stored
+  in a geographic CRS (EPSG:4326) for consistency and web mapping.
+- **Valid geometries:** tracts with missing or invalid geometry were removed.
+- **Join keys:** `GEOID` was cast to a consistent string type to ensure reliable joins.
+
+## Spatial Operations and Feature Engineering
+
+### Assigning Breweries to Tracts
+
+Breweries were assigned to census tracts using a point-in-polygon spatial join. This
+enabled tract-level aggregation of brewery presence.
+
+From this join, the following features were created:
+
+- `brewery_count`: number of breweries within each tract
+- `area_km2`: tract area in square kilometers
+- `brewery_density`: breweries per km², computed as:
+
+\[
+\text{brewery\_density} = \frac{\text{brewery\_count}}{\text{area\_km}^2}
+\]
+
+Tract area was calculated in a projected coordinate system to ensure accurate measurement.
+
+### Brewery Accessibility via Distance to Nearest Brewery
+
+To measure accessibility, each tract was represented by its centroid and paired with the
+nearest brewery using straight-line distance (Euclidean distance) computed in meters using
+projected coordinates.
+
+Outputs include:
+
+- `dist_to_brewery_m`: distance to the nearest brewery (meters)
+- `dist_to_brewery_km`: distance to the nearest brewery (kilometers)
+- `dist_to_brewery_min`: an approximate walking-time proxy derived from distance
+- `brewery_within_800m`: indicator for whether a tract is within 800 meters of a brewery
+- `brewery_within_1200m`: indicator for whether a tract is within 1200 meters of a brewery
+
+These threshold variables provide an interpretable proxy for “walkable access.”
+
+## Visualization Approach
+
+Two types of outputs were produced:
+
+1. **Static maps and plots** for exploratory analysis and results reporting, including
+   choropleths, scatterplots, and group comparisons.
+2. **An interactive web map** (Folium/Leaflet) for the project homepage, displaying:
+   - median home values by tract as a choropleth layer
+   - brewery locations as clickable markers
+   - summary statistics for nearby tracts within a walkable radius
+
+## Limitations
+
+This analysis is designed to measure association rather than causation. Key limitations include:
+
+- **Straight-line distance:** `dist_to_brewery_m` is not network-based walking distance and
+  should be interpreted as an accessibility proxy.
+- **Tract centroid approximation:** centroids may not represent where residents live within
+  each tract.
+- **Omitted variables:** home values reflect many drivers (e.g., income, transit access,
+  zoning, school quality). Brewery proximity may correlate with these broader neighborhood
+  characteristics rather than independently driving prices.
+
+Despite these limitations, the pipeline provides a transparent and reproducible framework for
+comparing neighborhood-scale amenity accessibility and housing indicators.

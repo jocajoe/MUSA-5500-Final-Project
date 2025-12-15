@@ -123,7 +123,22 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#methodology" id="toc-methodology" class="nav-link active" data-scroll-target="#methodology">Methodology</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#study-area-and-unit-of-analysis" id="toc-study-area-and-unit-of-analysis" class="nav-link" data-scroll-target="#study-area-and-unit-of-analysis">Study Area and Unit of Analysis</a></li>
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a>
+  <ul class="collapse">
+  <li><a href="#brewery-locations-open-brewery-db" id="toc-brewery-locations-open-brewery-db" class="nav-link" data-scroll-target="#brewery-locations-open-brewery-db">Brewery Locations (Open Brewery DB)</a></li>
+  <li><a href="#median-home-value-acs" id="toc-median-home-value-acs" class="nav-link" data-scroll-target="#median-home-value-acs">Median Home Value (ACS)</a></li>
+  <li><a href="#census-tract-boundaries" id="toc-census-tract-boundaries" class="nav-link" data-scroll-target="#census-tract-boundaries">Census Tract Boundaries</a></li>
+  </ul></li>
+  <li><a href="#data-cleaning-and-harmonization" id="toc-data-cleaning-and-harmonization" class="nav-link" data-scroll-target="#data-cleaning-and-harmonization">Data Cleaning and Harmonization</a></li>
+  <li><a href="#spatial-operations-and-feature-engineering" id="toc-spatial-operations-and-feature-engineering" class="nav-link" data-scroll-target="#spatial-operations-and-feature-engineering">Spatial Operations and Feature Engineering</a>
+  <ul class="collapse">
+  <li><a href="#assigning-breweries-to-tracts" id="toc-assigning-breweries-to-tracts" class="nav-link" data-scroll-target="#assigning-breweries-to-tracts">Assigning Breweries to Tracts</a></li>
+  <li><a href="#brewery-accessibility-via-distance-to-nearest-brewery" id="toc-brewery-accessibility-via-distance-to-nearest-brewery" class="nav-link" data-scroll-target="#brewery-accessibility-via-distance-to-nearest-brewery">Brewery Accessibility via Distance to Nearest Brewery</a></li>
+  </ul></li>
+  <li><a href="#visualization-approach" id="toc-visualization-approach" class="nav-link" data-scroll-target="#visualization-approach">Visualization Approach</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a></li>
   </ul>
 </nav>
     </div>
@@ -149,9 +164,97 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="methodology" class="level1">
-<h1>Methodology</h1>
-<p>Describe your data collection, cleaning, and analysis steps here.</p>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>This project builds a Philadelphia census-tract dataset that combines brewery locations with housing market indicators to explore whether brewery accessibility is associated with median home values. The workflow follows a reproducible pipeline:</p>
+<ol type="1">
+<li>Collect brewery locations from a public API</li>
+<li>Retrieve tract-level median home value from the American Community Survey (ACS)</li>
+<li>Load census tract geometries for Philadelphia County</li>
+<li>Engineer tract-level brewery metrics and accessibility features</li>
+<li>Visualize spatial patterns using static plots and an interactive web map</li>
+</ol>
+</section>
+<section id="study-area-and-unit-of-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="study-area-and-unit-of-analysis">Study Area and Unit of Analysis</h2>
+<p>The study area is <strong>Philadelphia County, Pennsylvania</strong>. The unit of analysis is the <strong>census tract</strong>, which provides a neighborhood-scale geography suitable for comparing housing values and amenity accessibility.</p>
+</section>
+<section id="data-sources" class="level2">
+<h2 class="anchored" data-anchor-id="data-sources">Data Sources</h2>
+<section id="brewery-locations-open-brewery-db" class="level3">
+<h3 class="anchored" data-anchor-id="brewery-locations-open-brewery-db">Brewery Locations (Open Brewery DB)</h3>
+<p>Brewery point locations were collected using the <strong>Open Brewery DB</strong> API. Returned records include the brewery name, type, and geographic coordinates. The analysis focuses on brewery types most relevant to local access and neighborhood-scale amenities (e.g., microbreweries, brewpubs, and regionals), and drops records missing valid coordinates.</p>
+<p><strong>Key fields used</strong> - Brewery name - Brewery type - Latitude / longitude (point geometry)</p>
+</section>
+<section id="median-home-value-acs" class="level3">
+<h3 class="anchored" data-anchor-id="median-home-value-acs">Median Home Value (ACS)</h3>
+<p>Median home values were sourced from the <strong>American Community Survey (ACS)</strong> at the census tract level. ACS values were joined to tract geometries using the tract <code>GEOID</code>. Missing or invalid values were treated as missing.</p>
+<p><strong>Key variable</strong> - <code>med_home_val</code> (tract-level median home value)</p>
+</section>
+<section id="census-tract-boundaries" class="level3">
+<h3 class="anchored" data-anchor-id="census-tract-boundaries">Census Tract Boundaries</h3>
+<p>Census tract geometries were obtained from the U.S. Census Bureau’s TIGER/Line products and filtered to Philadelphia County. These tracts provide the spatial framework for both aggregation and mapping.</p>
+</section>
+</section>
+<section id="data-cleaning-and-harmonization" class="level2">
+<h2 class="anchored" data-anchor-id="data-cleaning-and-harmonization">Data Cleaning and Harmonization</h2>
+<p>Several preprocessing steps were applied across datasets:</p>
+<ul>
+<li><strong>Coordinate reference systems (CRS):</strong> brewery points and tract geometries were stored in a geographic CRS (EPSG:4326) for consistency and web mapping.</li>
+<li><strong>Valid geometries:</strong> tracts with missing or invalid geometry were removed.</li>
+<li><strong>Join keys:</strong> <code>GEOID</code> was cast to a consistent string type to ensure reliable joins.</li>
+</ul>
+</section>
+<section id="spatial-operations-and-feature-engineering" class="level2">
+<h2 class="anchored" data-anchor-id="spatial-operations-and-feature-engineering">Spatial Operations and Feature Engineering</h2>
+<section id="assigning-breweries-to-tracts" class="level3">
+<h3 class="anchored" data-anchor-id="assigning-breweries-to-tracts">Assigning Breweries to Tracts</h3>
+<p>Breweries were assigned to census tracts using a point-in-polygon spatial join. This enabled tract-level aggregation of brewery presence.</p>
+<p>From this join, the following features were created:</p>
+<ul>
+<li><code>brewery_count</code>: number of breweries within each tract</li>
+<li><code>area_km2</code>: tract area in square kilometers</li>
+<li><code>brewery_density</code>: breweries per km², computed as:</li>
+</ul>
+<p>[ = ]</p>
+<p>Tract area was calculated in a projected coordinate system to ensure accurate measurement.</p>
+</section>
+<section id="brewery-accessibility-via-distance-to-nearest-brewery" class="level3">
+<h3 class="anchored" data-anchor-id="brewery-accessibility-via-distance-to-nearest-brewery">Brewery Accessibility via Distance to Nearest Brewery</h3>
+<p>To measure accessibility, each tract was represented by its centroid and paired with the nearest brewery using straight-line distance (Euclidean distance) computed in meters using projected coordinates.</p>
+<p>Outputs include:</p>
+<ul>
+<li><code>dist_to_brewery_m</code>: distance to the nearest brewery (meters)</li>
+<li><code>dist_to_brewery_km</code>: distance to the nearest brewery (kilometers)</li>
+<li><code>dist_to_brewery_min</code>: an approximate walking-time proxy derived from distance</li>
+<li><code>brewery_within_800m</code>: indicator for whether a tract is within 800 meters of a brewery</li>
+<li><code>brewery_within_1200m</code>: indicator for whether a tract is within 1200 meters of a brewery</li>
+</ul>
+<p>These threshold variables provide an interpretable proxy for “walkable access.”</p>
+</section>
+</section>
+<section id="visualization-approach" class="level2">
+<h2 class="anchored" data-anchor-id="visualization-approach">Visualization Approach</h2>
+<p>Two types of outputs were produced:</p>
+<ol type="1">
+<li><strong>Static maps and plots</strong> for exploratory analysis and results reporting, including choropleths, scatterplots, and group comparisons.</li>
+<li><strong>An interactive web map</strong> (Folium/Leaflet) for the project homepage, displaying:
+<ul>
+<li>median home values by tract as a choropleth layer</li>
+<li>brewery locations as clickable markers</li>
+<li>summary statistics for nearby tracts within a walkable radius</li>
+</ul></li>
+</ol>
+</section>
+<section id="limitations" class="level2">
+<h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
+<p>This analysis is designed to measure association rather than causation. Key limitations include:</p>
+<ul>
+<li><strong>Straight-line distance:</strong> <code>dist_to_brewery_m</code> is not network-based walking distance and should be interpreted as an accessibility proxy.</li>
+<li><strong>Tract centroid approximation:</strong> centroids may not represent where residents live within each tract.</li>
+<li><strong>Omitted variables:</strong> home values reflect many drivers (e.g., income, transit access, zoning, school quality). Brewery proximity may correlate with these broader neighborhood characteristics rather than independently driving prices.</li>
+</ul>
+<p>Despite these limitations, the pipeline provides a transparent and reproducible framework for comparing neighborhood-scale amenity accessibility and housing indicators.</p>
 
 
 </section>
