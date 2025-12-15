@@ -123,7 +123,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link active" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#summary-of-findings" id="toc-summary-of-findings" class="nav-link active" data-scroll-target="#summary-of-findings">Summary of Findings</a></li>
+  <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation">Interpretation</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a></li>
+  <li><a href="#future-work" id="toc-future-work" class="nav-link" data-scroll-target="#future-work">Future Work</a></li>
   </ul>
 </nav>
     </div>
@@ -149,9 +152,36 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="conclusion" class="level1">
-<h1>Conclusion</h1>
-<p>Final takeaways and next steps.</p>
+<section id="summary-of-findings" class="level2">
+<h2 class="anchored" data-anchor-id="summary-of-findings">Summary of Findings</h2>
+<p>This project examined the relationship between brewery accessibility and median home values across Philadelphia census tracts. Results indicate that tracts located closer to breweries tend to exhibit higher median home values, with distance to the nearest brewery showing a moderate negative association with housing prices.</p>
+<p>While brewery count and density display weaker relationships with home values, proximity alone appears to capture an important spatial signal related to neighborhood amenities and urban development patterns.</p>
+</section>
+<section id="interpretation" class="level2">
+<h2 class="anchored" data-anchor-id="interpretation">Interpretation</h2>
+<p>The findings suggest that breweries may function as indicators of broader neighborhood characteristics rather than acting as direct drivers of housing prices. Areas with higher brewery accessibility are often centrally located, mixed-use neighborhoods that also benefit from other amenities, services, and infrastructure associated with higher housing values.</p>
+<p>As such, brewery presence should be interpreted as part of a wider urban context rather than an isolated explanatory factor.</p>
+</section>
+<section id="limitations" class="level2">
+<h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
+<p>Several limitations should be noted:</p>
+<ul>
+<li>Accessibility was measured using straight-line distance rather than true walking distance along the street network.</li>
+<li>Census tract centroids were used as neighborhood proxies and may not reflect where residents live within each tract.</li>
+<li>Median home values are influenced by many factors not included in this analysis, such as income, zoning regulations, transit access, and school quality.</li>
+</ul>
+<p>These limitations mean results should be interpreted as associative rather than causal.</p>
+</section>
+<section id="future-work" class="level2">
+<h2 class="anchored" data-anchor-id="future-work">Future Work</h2>
+<p>Future extensions of this analysis could include:</p>
+<ul>
+<li>Network-based walking distance or travel time measures</li>
+<li>Additional neighborhood covariates such as income, transit access, or land use</li>
+<li>Temporal analysis to explore whether brewery openings precede changes in housing values</li>
+<li>Comparative analysis across multiple cities</li>
+</ul>
+<p>Despite these limitations, this project demonstrates how integrating public APIs, census data, and spatial analysis can provide meaningful insights into urban amenity patterns and housing markets.</p>
 
 
 </section>
