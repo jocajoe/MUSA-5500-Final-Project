@@ -1,6 +1,8 @@
 project:
   type: website
   output-dir: docs
+  resources:
+    - brewery_home_value_interactive.html
 
 website:
   title: "MUSA 5500 Final Project"
@@ -19,3 +21,4 @@ format:
   html:
     theme: cosmo
     toc: true
+

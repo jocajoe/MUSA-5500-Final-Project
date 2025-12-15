@@ -1,17 +1,10 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "pages/results.html",
+    "href": "pages/results.html",
+    "title": "Results",
     "section": "",
-    "text": "About this site"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "MUSA-5500-Final-Project",
-    "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "Results\nSummaries, charts, and interactive visualizations."
   },
   {
     "objectID": "pages/conclusion.html",
@@ -21,11 +14,214 @@
     "text": "Conclusion\nFinal takeaways and next steps."
   },
   {
-    "objectID": "pages/results.html",
-    "href": "pages/results.html",
-    "title": "Results",
+    "objectID": "notebooks/data_collection.html",
+    "href": "notebooks/data_collection.html",
+    "title": "01 — Data Collection",
     "section": "",
-    "text": "Results\nSummaries, charts, and interactive visualizations."
+    "text": "This notebook collects all primary datasets for the analysis: - Brewery data from the OpenBreweryDB API\n- ACS 5-year estimates for median home value in Philadelphia\n- Census tract geometries\n- Philadelphia street network from OpenStreetMap via OSMnx\nAll data is saved to the data/raw/ directory for reproducibility."
+  },
+  {
+    "objectID": "notebooks/data_collection.html#setup",
+    "href": "notebooks/data_collection.html#setup",
+    "title": "01 — Data Collection",
+    "section": "Setup",
+    "text": "Setup\nLoad packages and custom module functions.\nLoad the Census API key from the environment (ensuring it is not hardcoded).\n\nimport sys\nsys.path.append(\"../src\")\n\nimport os\nimport pandas as pd\nimport geopandas as gpd\nimport osmnx as ox\n\n# Custom modules\nfrom data_breweries import fetch_breweries_by_city, breweries_to_geodataframe\nfrom data_acs import load_acs_philly, load_philly_tract_shapes\nfrom data_osm import load_walk_network\n\nAPI_KEY = os.getenv(\"CENSUS_API_KEY\")\nAPI_KEY"
+  },
+  {
+    "objectID": "notebooks/data_collection.html#brewery-data-collection-openbrewerydb-api",
+    "href": "notebooks/data_collection.html#brewery-data-collection-openbrewerydb-api",
+    "title": "01 — Data Collection",
+    "section": "Brewery Data Collection (OpenBreweryDB API)",
+    "text": "Brewery Data Collection (OpenBreweryDB API)\nPull all breweries located in Philadelphia using the by_city parameter.\nAfter pulling, convert the results into a GeoDataFrame and save them as raw data in the repo\n\n# Fetch brewery data\ndf_brew = fetch_breweries_by_city(\"philadelphia\")\ndf_brew.head()\n\n\n\n\n\n\n\n\nid\nname\nbrewery_type\naddress_1\naddress_2\naddress_3\ncity\nstate_province\npostal_code\ncountry\nlongitude\nlatitude\nphone\nwebsite_url\nstate\nstreet\n\n\n\n\n0\nfb8eee34-da8a-42b2-bc4c-77020024a7f0\n2nd Story Brewing Company\nbrewpub\n117 Chestnut St Frnt\nNone\nNone\nPhiladelphia\nPennsylvania\n19106-4700\nUnited States\nNaN\nNaN\n2673145770\nhttp://www.2ndstorybrewing.com/\nPennsylvania\n117 Chestnut St Frnt\n\n\n1\n87d71c35-9537-4ef1-b232-668bea736ffa\nAttic Brewing\nplanning\nNone\nNone\nNone\nPhiladelphia\nPennsylvania\n19144-3603\nUnited States\nNaN\nNaN\n7082047376\nNone\nPennsylvania\nNone\n\n\n2\na834c4b5-4852-4887-aa6f-c872dfc10824\nBar Hygge / Brewery Techne\nbrewpub\n1720 Fairmount Ave\nNone\nNone\nPhiladelphia\nPennsylvania\n19130-2858\nUnited States\n-75.165673\n39.967073\nNone\nNone\nPennsylvania\n1720 Fairmount Ave\n\n\n3\n6b04fb31-0531-49fc-8dbf-517138e6c1dd\nBrewery ARS\nmicro\n1927-29 W Passyunk Ave\nNone\nNone\nPhiladelphia\nPennsylvania\n19145-3620\nUnited States\nNaN\nNaN\n2159605173\nhttp://breweryars.com\nPennsylvania\n1927-29 W Passyunk Ave\n\n\n4\n6660d8a1-2668-4096-9510-92ea23e6371e\nCrime & Punishment Brewing Company\nbrewpub\n2711 W Girard Ave\nNone\nNone\nPhiladelphia\nPennsylvania\n19130-1212\nUnited States\n-75.180842\n39.974365\n2152352739\nhttp://www.crimeandpunishmentbrewery.com\nPennsylvania\n2711 W Girard Ave\n\n\n\n\n\n\n\n\n# Convert to GeoDataFrame\ngdf_brew = breweries_to_geodataframe(df_brew)\ngdf_brew.head()\n\n\n\n\n\n\n\n\nid\nname\nbrewery_type\naddress_1\naddress_2\naddress_3\ncity\nstate_province\npostal_code\ncountry\nlongitude\nlatitude\nphone\nwebsite_url\nstate\nstreet\ngeometry\n\n\n\n\n2\na834c4b5-4852-4887-aa6f-c872dfc10824\nBar Hygge / Brewery Techne\nbrewpub\n1720 Fairmount Ave\nNone\nNone\nPhiladelphia\nPennsylvania\n19130-2858\nUnited States\n-75.165673\n39.967073\nNone\nNone\nPennsylvania\n1720 Fairmount Ave\nPOINT (-75.16567 39.96707)\n\n\n4\n6660d8a1-2668-4096-9510-92ea23e6371e\nCrime & Punishment Brewing Company\nbrewpub\n2711 W Girard Ave\nNone\nNone\nPhiladelphia\nPennsylvania\n19130-1212\nUnited States\n-75.180842\n39.974365\n2152352739\nhttp://www.crimeandpunishmentbrewery.com\nPennsylvania\n2711 W Girard Ave\nPOINT (-75.18084 39.97436)\n\n\n7\n18b29afa-682c-4c5e-8ecb-ba0f61cf9f16\nEarth Bread + Brewery\nbrewpub\n7136 Germantown Ave\nNone\nNone\nPhiladelphia\nPennsylvania\n19119-1843\nUnited States\n-75.190355\n40.059200\n2152426666\nhttp://www.earthbreadbrewery.com\nPennsylvania\n7136 Germantown Ave\nPOINT (-75.19035 40.05920)\n\n\n8\n339caa7a-481f-4315-bba1-bca6b74d8b89\nEvil Genius Beer Co\nmicro\n1727 N Front St\nNone\nNone\nPhiladelphia\nPennsylvania\n19122-3203\nUnited States\n-75.134016\n39.975780\n2154256820\nhttp://www.evilgeniusbeer.com\nPennsylvania\n1727 N Front St\nPOINT (-75.13402 39.97578)\n\n\n9\ne8f67941-37fa-41bd-8c4b-ca598a144217\nFermentery Form\nmicro\n161 Cecil B Moore Ave\nNone\nNone\nPhiladelphia\nPennsylvania\n19122-3234\nUnited States\n-75.136886\n39.976092\n2675183676\nhttp://www.fermenteryform.com\nPennsylvania\n161 Cecil B Moore Ave\nPOINT (-75.13689 39.97609)\n\n\n\n\n\n\n\n\n# Save raw brewery data\ngdf_brew.to_file(\"../data/raw/breweries_philly.geojson\", driver=\"GeoJSON\")\n\n\ngdf_brew.plot(figsize=(6,6), markersize=10)"
+  },
+  {
+    "objectID": "notebooks/data_collection.html#acs-median-home-value-tract-boundaries",
+    "href": "notebooks/data_collection.html#acs-median-home-value-tract-boundaries",
+    "title": "01 — Data Collection",
+    "section": "ACS Median Home Value + Tract Boundaries",
+    "text": "ACS Median Home Value + Tract Boundaries\nRetrieve median home value (B25077_001E) from the ACS 5-year dataset for all census tracts in Philadelphia County. Download tract geometries via TIGER/Line files.\n\n# Load ACS median home value for Philadelphia tracts\ndf_acs = load_acs_philly(API_KEY)\ndf_acs.head()\n\n\n\n\n\n\n\n\nNAME\nmedian_home_value\nstate\ncounty\ntract\nGEOID\n\n\n\n\n0\nCensus Tract 1.01; Philadelphia County; Pennsy...\n511400.0\n42\n101\n000101\n42101000101\n\n\n1\nCensus Tract 1.02; Philadelphia County; Pennsy...\n508100.0\n42\n101\n000102\n42101000102\n\n\n2\nCensus Tract 2; Philadelphia County; Pennsylvania\n483700.0\n42\n101\n000200\n42101000200\n\n\n3\nCensus Tract 3; Philadelphia County; Pennsylvania\n669800.0\n42\n101\n000300\n42101000300\n\n\n4\nCensus Tract 4.01; Philadelphia County; Pennsy...\n587400.0\n42\n101\n000401\n42101000401\n\n\n\n\n\n\n\n\nfrom data_acs import load_philly_tract_shapes\n\ngdf_tracts = load_philly_tract_shapes(2022)\ngdf_tracts.head()\n\nDownloading from: https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_42_tract.zip\n\n\n\n\n\n\n\n\n\nSTATEFP\nCOUNTYFP\nTRACTCE\nGEOID\nNAME\nNAMELSAD\nMTFCC\nFUNCSTAT\nALAND\nAWATER\nINTPTLAT\nINTPTLON\ngeometry\n\n\n\n\n98\n42\n101\n026301\n42101026301\n263.01\nCensus Tract 263.01\nG5020\nS\n406340\n0\n+40.0728148\n-075.1637161\nPOLYGON ((-75.16899 40.07147, -75.16864 40.071...\n\n\n99\n42\n101\n029200\n42101029200\n292\nCensus Tract 292\nG5020\nS\n1745920\n28444\n+40.0249035\n-075.1017831\nPOLYGON ((-75.11288 40.02746, -75.11280 40.027...\n\n\n100\n42\n101\n024400\n42101024400\n244\nCensus Tract 244\nG5020\nS\n421189\n0\n+40.0248284\n-075.1638925\nPOLYGON ((-75.16912 40.02387, -75.16843 40.024...\n\n\n101\n42\n101\n033200\n42101033200\n332\nCensus Tract 332\nG5020\nS\n842716\n0\n+40.0439733\n-075.0449684\nPOLYGON ((-75.05465 40.04465, -75.05396 40.045...\n\n\n102\n42\n101\n980200\n42101980200\n9802\nCensus Tract 9802\nG5020\nS\n4916641\n250846\n+40.0712811\n-075.0443487\nPOLYGON ((-75.07448 40.08685, -75.07443 40.087...\n\n\n\n\n\n\n\n\ndf_acs.to_csv(\"../data/raw/acs_philly_median_home_value.csv\", index=False)\ngdf_tracts.to_file(\"../data/raw/tracts_philly.geojson\", driver=\"GeoJSON\")"
+  },
+  {
+    "objectID": "notebooks/data_collection.html#philadelphia-street-network-osmnx",
+    "href": "notebooks/data_collection.html#philadelphia-street-network-osmnx",
+    "title": "01 — Data Collection",
+    "section": "Philadelphia Street Network (OSMnx)",
+    "text": "Philadelphia Street Network (OSMnx)\nDownload the walkable street network for Philadelphia using OSMnx. This will be used later to compute walking distances and brewery accessibility.\n\nG = load_walk_network()\nG\n\n&lt;networkx.classes.multidigraph.MultiDiGraph at 0x2578d523490&gt;\n\n\n\nox.save_graphml(G, \"../data/raw/philly_walk_network.graphml\")"
+  },
+  {
+    "objectID": "notebooks/data_collection.html#visual-checks",
+    "href": "notebooks/data_collection.html#visual-checks",
+    "title": "01 — Data Collection",
+    "section": "Visual Checks",
+    "text": "Visual Checks\nBefore moving to the next step, confirm that: - Brewery points fall inside Philadelphia\n- Tracts load correctly\n- CRS matches expectations (EPSG:4326 for ACS/breweries)\n\nax = gdf_tracts.plot(figsize=(8,8), color=\"lightgrey\", edgecolor=\"white\")\ngdf_brew.plot(ax=ax, color=\"red\", markersize=8)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Brewery Accessibility and Home Values in Philadelphia",
+    "section": "",
+    "text": "This project examines whether proximity to breweries is associated with median home values across Philadelphia census tracts. Using brewery location data, American Community Survey (ACS) housing values, and census tract geometries, the analysis explores spatial patterns of brewery accessibility and neighborhood housing markets.\nRather than making causal claims, the project focuses on identifying associations and visualizing how breweries and housing values co-locate across the city."
+  },
+  {
+    "objectID": "index.html#project-overview",
+    "href": "index.html#project-overview",
+    "title": "Brewery Accessibility and Home Values in Philadelphia",
+    "section": "",
+    "text": "This project examines whether proximity to breweries is associated with median home values across Philadelphia census tracts. Using brewery location data, American Community Survey (ACS) housing values, and census tract geometries, the analysis explores spatial patterns of brewery accessibility and neighborhood housing markets.\nRather than making causal claims, the project focuses on identifying associations and visualizing how breweries and housing values co-locate across the city."
+  },
+  {
+    "objectID": "index.html#research-question",
+    "href": "index.html#research-question",
+    "title": "Brewery Accessibility and Home Values in Philadelphia",
+    "section": "Research Question",
+    "text": "Research Question\n\nAre census tracts closer to breweries associated with higher median home values?\nHow does brewery accessibility vary spatially across Philadelphia?"
+  },
+  {
+    "objectID": "index.html#data-sources",
+    "href": "index.html#data-sources",
+    "title": "Brewery Accessibility and Home Values in Philadelphia",
+    "section": "Data Sources",
+    "text": "Data Sources\nThis project integrates multiple publicly available datasets:\n\nBrewery locations from the Open Brewery DB API\nMedian home values from the American Community Survey (ACS)\nCensus tract boundaries from the U.S. Census Bureau"
+  },
+  {
+    "objectID": "index.html#interactive-map",
+    "href": "index.html#interactive-map",
+    "title": "Brewery Accessibility and Home Values in Philadelphia",
+    "section": "Interactive Map",
+    "text": "Interactive Map\nThe interactive map below displays median home values by census tract, with brewery locations overlaid. Clicking a brewery reveals nearby neighborhood statistics within a walkable distance.\n\n\nTip: Zoom in and click brewery markers to view neighborhood summary statistics."
+  },
+  {
+    "objectID": "index.html#key-takeaways",
+    "href": "index.html#key-takeaways",
+    "title": "Brewery Accessibility and Home Values in Philadelphia",
+    "section": "Key Takeaways",
+    "text": "Key Takeaways\n\nCensus tracts closer to breweries tend to have higher median home values.\nDistance to the nearest brewery shows a moderate negative correlation with home values.\nBrewery presence appears to reflect broader neighborhood amenity patterns rather than acting as a direct driver of housing prices.\nDistance to the nearest brewery shows a moderate negative correlation with home values (r ≈ -0.39)."
+  },
+  {
+    "objectID": "index.html#explore-the-analysis",
+    "href": "index.html#explore-the-analysis",
+    "title": "Brewery Accessibility and Home Values in Philadelphia",
+    "section": "Explore the Analysis",
+    "text": "Explore the Analysis\nThe pages linked above document the full data collection process, methodology, results, and conclusions of this project."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "notebooks/data_cleaning_feature_engineering.html",
+    "href": "notebooks/data_cleaning_feature_engineering.html",
+    "title": "02 — Data Cleaning & Feature Engineering",
+    "section": "",
+    "text": "This notebook prepares the datasets collected in Notebook 1 for analysis.\nKey steps include:\nOutput:\ndata/processed/philly_tracts_final.geojson"
+  },
+  {
+    "objectID": "notebooks/data_cleaning_feature_engineering.html#setup",
+    "href": "notebooks/data_cleaning_feature_engineering.html#setup",
+    "title": "02 — Data Cleaning & Feature Engineering",
+    "section": "Setup",
+    "text": "Setup\nLoad packages and custom module functions. Load datasets created in notebook 1 from local path\n\nimport sys\nsys.path.append(\"../src\")\n\nimport pandas as pd\nimport geopandas as gpd\nimport numpy as np\nfrom sklearn.neighbors import KDTree\n\n\ngdf_brew = gpd.read_file(\"../data/raw/breweries_philly.geojson\")\ndf_acs = pd.read_csv(\"../data/raw/acs_philly_median_home_value.csv\")\ngdf_tracts = gpd.read_file(\"../data/raw/tracts_philly.geojson\")"
+  },
+  {
+    "objectID": "notebooks/data_cleaning_feature_engineering.html#step-1-clean-brewery-data",
+    "href": "notebooks/data_cleaning_feature_engineering.html#step-1-clean-brewery-data",
+    "title": "02 — Data Cleaning & Feature Engineering",
+    "section": "Step 1: Clean Brewery Data",
+    "text": "Step 1: Clean Brewery Data\n\nDrop missing geometry\nKeep brewery types relevant to the analysis\nEnsure CRS is correct\n\n\ngdf_brew = gdf_brew.dropna(subset=[\"geometry\"])\ngdf_brew = gdf_brew[gdf_brew[\"brewery_type\"].isin([\"micro\", \"brewpub\", \"regional\"])]\n\nif gdf_brew.crs is None:\n    gdf_brew = gdf_brew.set_crs(epsg=4326)\nelse:\n    gdf_brew = gdf_brew.to_crs(epsg=4326)"
+  },
+  {
+    "objectID": "notebooks/data_cleaning_feature_engineering.html#step-2-clean-acs-median-home-value-data",
+    "href": "notebooks/data_cleaning_feature_engineering.html#step-2-clean-acs-median-home-value-data",
+    "title": "02 — Data Cleaning & Feature Engineering",
+    "section": "Step 2: Clean ACS Median Home Value Data",
+    "text": "Step 2: Clean ACS Median Home Value Data\n\ndf_acs[\"GEOID\"] = df_acs[\"GEOID\"].astype(str)\ndf_acs = df_acs.rename(columns={\"median_home_value\": \"med_home_val\"})\ndf_acs[\"med_home_val\"] = pd.to_numeric(df_acs[\"med_home_val\"], errors=\"coerce\")\ndf_acs.loc[df_acs[\"med_home_val\"] &lt;= 0, \"med_home_val\"] = np.nan"
+  },
+  {
+    "objectID": "notebooks/data_cleaning_feature_engineering.html#step-3-clean-tract-geometries",
+    "href": "notebooks/data_cleaning_feature_engineering.html#step-3-clean-tract-geometries",
+    "title": "02 — Data Cleaning & Feature Engineering",
+    "section": "Step 3: Clean Tract Geometries",
+    "text": "Step 3: Clean Tract Geometries\n\nEnsure valid geometries\nHarmonize CRS\n\n\ngdf_tracts = gdf_tracts[gdf_tracts.geometry.notnull()]\ngdf_tracts = gdf_tracts[gdf_tracts.is_valid]\n\nif gdf_tracts.crs is None:\n    gdf_tracts = gdf_tracts.set_crs(epsg=4326)\nelse:\n    gdf_tracts = gdf_tracts.to_crs(epsg=4326)\n\ngdf_tracts[\"GEOID\"] = gdf_tracts[\"GEOID\"].astype(str)\n\ngdf_tracts = gdf_tracts.merge(df_acs[[\"GEOID\", \"med_home_val\"]], on=\"GEOID\", how=\"left\")"
+  },
+  {
+    "objectID": "notebooks/data_cleaning_feature_engineering.html#step-5-brewery-count-and-density",
+    "href": "notebooks/data_cleaning_feature_engineering.html#step-5-brewery-count-and-density",
+    "title": "02 — Data Cleaning & Feature Engineering",
+    "section": "Step 5: Brewery Count and density",
+    "text": "Step 5: Brewery Count and density\n\nbrew_tract_join = gpd.sjoin(gdf_brew, gdf_tracts, how=\"left\", predicate=\"within\")\nbrew_counts = brew_tract_join.groupby(\"GEOID\").size()\n\ngdf_tracts[\"brewery_count\"] = gdf_tracts[\"GEOID\"].map(brew_counts).fillna(0).astype(int)\ngdf_tracts[\"area_km2\"] = gdf_tracts.to_crs(3857).area / 1e6\ngdf_tracts[\"brewery_density\"] = gdf_tracts[\"brewery_count\"] / gdf_tracts[\"area_km2\"]"
+  },
+  {
+    "objectID": "notebooks/data_cleaning_feature_engineering.html#spatial-accessibility-feature",
+    "href": "notebooks/data_cleaning_feature_engineering.html#spatial-accessibility-feature",
+    "title": "02 — Data Cleaning & Feature Engineering",
+    "section": "Spatial Accessibility Feature",
+    "text": "Spatial Accessibility Feature\n\nfrom sklearn.neighbors import KDTree\n\n# Project both layers to meters\ntracts_m = gdf_tracts.to_crs(3857).copy()\nbrews_m  = gdf_brew.to_crs(3857).copy()\n\n# Centroids in meters CRS (safe)\ntracts_m[\"centroid\"] = tracts_m.geometry.centroid\n\n# Build nearest-neighbor search tree for breweries\nbrew_xy = np.column_stack([brews_m.geometry.x, brews_m.geometry.y])\ntree = KDTree(brew_xy)\n\n# Query nearest brewery distance for each tract centroid\ncent_xy = np.column_stack([tracts_m[\"centroid\"].x, tracts_m[\"centroid\"].y])\ndist_m, _ = tree.query(cent_xy, k=1)\n\n# Store back on main GeoDataFrame\ngdf_tracts[\"dist_to_brewery_m\"] = dist_m.flatten()\ngdf_tracts[\"dist_to_brewery_km\"] = gdf_tracts[\"dist_to_brewery_m\"] / 1000\ngdf_tracts[\"dist_to_brewery_min\"] = gdf_tracts[\"dist_to_brewery_m\"] / 80  # ~80m/min\n\ngdf_tracts[\"brewery_within_800m\"] = (gdf_tracts[\"dist_to_brewery_m\"] &lt;= 800).astype(int)\ngdf_tracts[\"brewery_within_1200m\"] = (gdf_tracts[\"dist_to_brewery_m\"] &lt;= 1200).astype(int)"
+  },
+  {
+    "objectID": "notebooks/data_cleaning_feature_engineering.html#step-9-sanity-checks-and-final-dataset-cleaning",
+    "href": "notebooks/data_cleaning_feature_engineering.html#step-9-sanity-checks-and-final-dataset-cleaning",
+    "title": "02 — Data Cleaning & Feature Engineering",
+    "section": "Step 9: Sanity Checks and final dataset cleaning",
+    "text": "Step 9: Sanity Checks and final dataset cleaning\n\nprint(gdf_tracts[\"med_home_val\"].describe())\nprint(\"Missing med_home_val:\", gdf_tracts[\"med_home_val\"].isna().sum())\n\nprint(gdf_tracts[\"dist_to_brewery_m\"].describe())\nprint(gdf_tracts[[\"brewery_within_800m\", \"brewery_within_1200m\"]].mean())\n\ncount    3.760000e+02\nmean     2.619795e+05\nstd      1.716772e+05\nmin      4.670000e+04\n25%      1.314000e+05\n50%      2.227000e+05\n75%      3.245250e+05\nmax      1.036700e+06\nName: med_home_val, dtype: float64\nMissing med_home_val: 32\ncount      408.000000\nmean      3880.579448\nstd       2510.394934\nmin        102.467807\n25%       1816.960671\n50%       3363.786585\n75%       5651.917913\nmax      12125.640127\nName: dist_to_brewery_m, dtype: float64\nbrewery_within_800m     0.063725\nbrewery_within_1200m    0.137255\ndtype: float64"
+  },
+  {
+    "objectID": "notebooks/data_cleaning_feature_engineering.html#finalized-dataset-export",
+    "href": "notebooks/data_cleaning_feature_engineering.html#finalized-dataset-export",
+    "title": "02 — Data Cleaning & Feature Engineering",
+    "section": "Finalized Dataset Export",
+    "text": "Finalized Dataset Export\n\nimport os\nos.makedirs(\"../data/processed\", exist_ok=True)\n\ngdf_final = gdf_tracts.dropna(subset=[\"med_home_val\"]).copy()\n\ngdf_final.to_file(\"../data/processed/philly_tracts_final.geojson\", driver=\"GeoJSON\")\ngdf_final.drop(columns=\"geometry\").to_csv(\"../data/processed/philly_tracts_final.csv\", index=False)"
+  },
+  {
+    "objectID": "notebooks/eda_and_visualization.html",
+    "href": "notebooks/eda_and_visualization.html",
+    "title": "03 — Exploratory Analysis & Visualization",
+    "section": "",
+    "text": "This notebook explores spatial patterns in brewery accessibility and median home values across Philadelphia census tracts. Using the cleaned, tract-level dataset created in Notebook 2, we examine geographic variation, bivariate relationships, and accessibility threshold effects.\nimport pandas as pd\nimport geopandas as gpd\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\nplt.style.use(\"seaborn-v0_8\")\ngdf = gpd.read_file(\"../data/processed/philly_tracts_final.geojson\")\ngdf.columns\ngdf.shape\n\n(376, 22)"
+  },
+  {
+    "objectID": "notebooks/eda_and_visualization.html#median-home-values-choropleth",
+    "href": "notebooks/eda_and_visualization.html#median-home-values-choropleth",
+    "title": "03 — Exploratory Analysis & Visualization",
+    "section": "Median home values choropleth",
+    "text": "Median home values choropleth\n\nfig, ax = plt.subplots(1, 1, figsize=(8, 8))\n\ngdf.plot(\n    column=\"med_home_val\",\n    cmap=\"viridis\",\n    linewidth=0,\n    legend=True,\n    ax=ax\n)\n\nax.set_title(\"Median Home Value by Census Tract\")\nax.axis(\"off\")\nplt.show()"
+  },
+  {
+    "objectID": "notebooks/eda_and_visualization.html#distance-to-nearest-brewery",
+    "href": "notebooks/eda_and_visualization.html#distance-to-nearest-brewery",
+    "title": "03 — Exploratory Analysis & Visualization",
+    "section": "Distance to nearest brewery",
+    "text": "Distance to nearest brewery\n\nfig, ax = plt.subplots(1, 1, figsize=(8, 8))\n\ngdf.plot(\n    column=\"dist_to_brewery_m\",\n    cmap=\"magma_r\",\n    linewidth=0,\n    legend=True,\n    ax=ax\n)\n\nax.set_title(\"Distance to Nearest Brewery (meters)\")\nax.axis(\"off\")\nplt.show()"
+  },
+  {
+    "objectID": "notebooks/eda_and_visualization.html#non-spatial-eda-distributions",
+    "href": "notebooks/eda_and_visualization.html#non-spatial-eda-distributions",
+    "title": "03 — Exploratory Analysis & Visualization",
+    "section": "Non Spatial EDA (Distributions)",
+    "text": "Non Spatial EDA (Distributions)\n\nsns.histplot(gdf[\"med_home_val\"], bins=40)\nplt.title(\"Distribution of Median Home Values\")\nplt.xlabel(\"Median Home Value ($)\")\nplt.show()\n\n\n\n\n\n\n\n\n\nsns.histplot(gdf[\"dist_to_brewery_m\"], bins=40)\nplt.title(\"Distribution of Distance to Nearest Brewery\")\nplt.xlabel(\"Distance (meters)\")\nplt.show()"
+  },
+  {
+    "objectID": "notebooks/eda_and_visualization.html#bivariate-relationships",
+    "href": "notebooks/eda_and_visualization.html#bivariate-relationships",
+    "title": "03 — Exploratory Analysis & Visualization",
+    "section": "Bivariate Relationships",
+    "text": "Bivariate Relationships\n\nsns.scatterplot(\n    data=gdf,\n    x=\"dist_to_brewery_m\",\n    y=\"med_home_val\",\n    alpha=0.6\n)\n\nplt.title(\"Median Home Value vs Distance to Nearest Brewery\")\nplt.xlabel(\"Distance to Nearest Brewery (m)\")\nplt.ylabel(\"Median Home Value ($)\")\nplt.show()\n\n\n\n\n\n\n\n\n\nsns.regplot(\n    data=gdf,\n    x=\"dist_to_brewery_m\",\n    y=\"med_home_val\",\n    scatter_kws={\"alpha\": 0.4},\n    line_kws={\"color\": \"red\"},\n    lowess=True\n)\nplt.show()"
+  },
+  {
+    "objectID": "notebooks/eda_and_visualization.html#threshhold-analysis",
+    "href": "notebooks/eda_and_visualization.html#threshhold-analysis",
+    "title": "03 — Exploratory Analysis & Visualization",
+    "section": "Threshhold analysis",
+    "text": "Threshhold analysis\n\ngdf[\"walkable_800m\"] = gdf[\"brewery_within_800m\"].map({1: \"≤800m\", 0: \"&gt;800m\"})\n\n\nsns.boxplot(\n    data=gdf,\n    x=\"walkable_800m\",\n    y=\"med_home_val\"\n)\n\nplt.title(\"Median Home Value by Brewery Walkability (800m)\")\nplt.xlabel(\"Brewery Accessibility\")\nplt.ylabel(\"Median Home Value ($)\")\nplt.show()"
+  },
+  {
+    "objectID": "notebooks/eda_and_visualization.html#brewery-intensity-effects",
+    "href": "notebooks/eda_and_visualization.html#brewery-intensity-effects",
+    "title": "03 — Exploratory Analysis & Visualization",
+    "section": "Brewery intensity effects",
+    "text": "Brewery intensity effects\n\nsns.scatterplot(\n    data=gdf,\n    x=\"brewery_density\",\n    y=\"med_home_val\",\n    alpha=0.6\n)\n\nplt.title(\"Median Home Value vs Brewery Density\")\nplt.xlabel(\"Breweries per km²\")\nplt.ylabel(\"Median Home Value ($)\")\nplt.show()\n\n\n\n\n\n\n\n\n\n## Interactive Map: Breweries and Nearby Home Values\n\n\nimport folium\nimport numpy as np\n\n# Load processed tracts\ngdf = gpd.read_file(\"../data/processed/philly_tracts_final.geojson\")\n\n# Load breweries\ngdf_brew = gpd.read_file(\"../data/raw/breweries_philly.geojson\")\ngdf_brew = gdf_brew.dropna(subset=[\"geometry\"])\ngdf_brew = gdf_brew[gdf_brew[\"brewery_type\"].isin([\"micro\", \"brewpub\", \"regional\"])]\n\n# Ensure CRS\ngdf = gdf.to_crs(4326)\ngdf_brew = gdf_brew.to_crs(4326)\n\n\n# Project to meters for buffering\ntracts_m = gdf.to_crs(3857).copy()\nbrews_m = gdf_brew.to_crs(3857).copy()\n\n# Use tract centroids for walkability\ntracts_m[\"centroid\"] = tracts_m.geometry.centroid\n\nR = 800  # walkable radius in meters\n\nbrew_stats = []\n\nfor idx, brew in brews_m.iterrows():\n    buf = brew.geometry.buffer(R)\n    nearby = tracts_m[tracts_m[\"centroid\"].within(buf)]\n\n    brew_stats.append({\n        \"brew_index\": idx,\n        \"n_tracts_800m\": len(nearby),\n        \"median_home_800m\": nearby[\"med_home_val\"].median(),\n        \"mean_home_800m\": nearby[\"med_home_val\"].mean(),\n    })\n\nbrew_stats = (\n    gpd.GeoDataFrame(brew_stats)\n    .set_index(\"brew_index\")\n)\n\ngdf_brew = gdf_brew.join(brew_stats)\n\n\n# Initialize map\nm = folium.Map(\n    location=[39.9526, -75.1652],\n    zoom_start=12,\n    tiles=\"CartoDB positron\"\n)\n\n# Add tract-level choropleth (median home value)\nfolium.Choropleth(\n    geo_data=gdf,\n    data=gdf,\n    columns=[\"GEOID\", \"med_home_val\"],\n    key_on=\"feature.properties.GEOID\",\n    fill_color=\"YlGnBu\",\n    fill_opacity=0.6,\n    line_opacity=0.1,\n    nan_fill_color=\"lightgray\",\n    legend_name=\"Median Home Value ($)\"\n).add_to(m)\n\n&lt;folium.features.Choropleth at 0x256b1e65c00&gt;\n\n\n\nfor _, row in gdf_brew.iterrows():\n    lat, lon = row.geometry.y, row.geometry.x\n\n    popup_html = f\"\"\"\n    &lt;b&gt;{row.get('name','Brewery')}&lt;/b&gt;&lt;br&gt;\n    Type: {row.get('brewery_type','')}&lt;br&gt;&lt;br&gt;\n    &lt;b&gt;Within 800m&lt;/b&gt;&lt;br&gt;\n    Tracts: {int(row.get('n_tracts_800m',0))}&lt;br&gt;\n    Median home value: ${row.get('median_home_800m',np.nan):,.0f}&lt;br&gt;\n    Mean home value: ${row.get('mean_home_800m',np.nan):,.0f}\n    \"\"\"\n\n    folium.CircleMarker(\n        location=[lat, lon],\n        radius=5,\n        fill=True,\n        fill_opacity=0.85,\n        color=\"#8c2d04\",\n        tooltip=row.get(\"name\",\"Brewery\"),\n        popup=folium.Popup(popup_html, max_width=300)\n    ).add_to(m)\n\n\nm\nm.save(\"brewery_home_value_interactive.html\")\n\n\ngdf[[\"med_home_val\", \"dist_to_brewery_m\", \"brewery_density\", \"brewery_count\"]].corr()\n\n\n\n\n\n\n\n\nmed_home_val\ndist_to_brewery_m\nbrewery_density\nbrewery_count\n\n\n\n\nmed_home_val\n1.000000\n-0.392675\n0.137110\n0.143154\n\n\ndist_to_brewery_m\n-0.392675\n1.000000\n-0.234798\n-0.259107\n\n\nbrewery_density\n0.137110\n-0.234798\n1.000000\n0.885110\n\n\nbrewery_count\n0.143154\n-0.259107\n0.885110\n1.000000\n\n\n\n\n\n\n\n\nimport statsmodels.api as sm\n\ndf = gdf.dropna(subset=[\"med_home_val\", \"dist_to_brewery_m\"])\n\nX = sm.add_constant(df[\"dist_to_brewery_m\"])\ny = df[\"med_home_val\"]\n\nmodel = sm.OLS(y, X).fit()\nmodel.rsquared\n\n0.15419401468718752"
   },
   {
     "objectID": "pages/methodology.html",

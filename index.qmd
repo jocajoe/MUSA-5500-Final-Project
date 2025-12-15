@@ -1,7 +1,63 @@
 ---
-title: "MUSA-5500-Final-Project"
+title: "Brewery Accessibility and Home Values in Philadelphia"
+subtitle: "A Spatial Analysis of Urban Amenities and Housing Markets"
+page-layout: full
 ---
 
-This is a Quarto website.
+## Project Overview
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+This project examines whether proximity to breweries is associated with
+median home values across Philadelphia census tracts. Using brewery location
+data, American Community Survey (ACS) housing values, and census tract
+geometries, the analysis explores spatial patterns of brewery accessibility
+and neighborhood housing markets.
+
+Rather than making causal claims, the project focuses on identifying
+associations and visualizing how breweries and housing values co-locate
+across the city.
+
+## Research Question
+
+- Are census tracts closer to breweries associated with higher median home values?
+- How does brewery accessibility vary spatially across Philadelphia?
+
+
+## Data Sources
+
+This project integrates multiple publicly available datasets:
+
+- Brewery locations from the Open Brewery DB API
+- Median home values from the American Community Survey (ACS)
+- Census tract boundaries from the U.S. Census Bureau
+
+## Interactive Map
+
+The interactive map below displays median home values by census tract,
+with brewery locations overlaid. Clicking a brewery reveals nearby
+neighborhood statistics within a walkable distance.
+
+<iframe src="brewery_home_value_interactive.html"
+        width="100%"
+        height="650"
+        style="border:none;">
+</iframe>
+
+*Tip: Zoom in and click brewery markers to view neighborhood summary statistics.*
+
+
+
+## Key Takeaways
+
+- Census tracts closer to breweries tend to have higher median home values.
+- Distance to the nearest brewery shows a moderate negative correlation
+  with home values.
+- Brewery presence appears to reflect broader neighborhood amenity patterns
+  rather than acting as a direct driver of housing prices.
+- Distance to the nearest brewery shows a moderate negative correlation with home values (r ≈ -0.39).
+
+
+## Explore the Analysis
+
+The pages linked above document the full data collection process,
+methodology, results, and conclusions of this project.
+

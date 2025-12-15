@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>MUSA-5500-Final-Project – MUSA 5500 Final Project</title>
+<title>Brewery Accessibility and Home Values in Philadelphia – MUSA 5500 Final Project</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -115,23 +115,35 @@ ul.task-list li input[type="checkbox"] {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#project-overview" id="toc-project-overview" class="nav-link active" data-scroll-target="#project-overview">Project Overview</a></li>
+  <li><a href="#research-question" id="toc-research-question" class="nav-link" data-scroll-target="#research-question">Research Question</a></li>
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a></li>
+  <li><a href="#interactive-map" id="toc-interactive-map" class="nav-link" data-scroll-target="#interactive-map">Interactive Map</a></li>
+  <li><a href="#key-takeaways" id="toc-key-takeaways" class="nav-link" data-scroll-target="#key-takeaways">Key Takeaways</a></li>
+  <li><a href="#explore-the-analysis" id="toc-explore-the-analysis" class="nav-link" data-scroll-target="#explore-the-analysis">Explore the Analysis</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content column-page-left" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">MUSA-5500-Final-Project</h1>
+<h1 class="title">Brewery Accessibility and Home Values in Philadelphia</h1>
+<p class="subtitle lead">A Spatial Analysis of Urban Amenities and Housing Markets</p>
 </div>
 
 
 
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page-left">
 
     
   
@@ -143,10 +155,49 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This is a Quarto website.</p>
-<p>To learn more about Quarto websites visit <a href="https://quarto.org/docs/websites" class="uri">https://quarto.org/docs/websites</a>.</p>
+<section id="project-overview" class="level2">
+<h2 class="anchored" data-anchor-id="project-overview">Project Overview</h2>
+<p>This project examines whether proximity to breweries is associated with median home values across Philadelphia census tracts. Using brewery location data, American Community Survey (ACS) housing values, and census tract geometries, the analysis explores spatial patterns of brewery accessibility and neighborhood housing markets.</p>
+<p>Rather than making causal claims, the project focuses on identifying associations and visualizing how breweries and housing values co-locate across the city.</p>
+</section>
+<section id="research-question" class="level2">
+<h2 class="anchored" data-anchor-id="research-question">Research Question</h2>
+<ul>
+<li>Are census tracts closer to breweries associated with higher median home values?</li>
+<li>How does brewery accessibility vary spatially across Philadelphia?</li>
+</ul>
+</section>
+<section id="data-sources" class="level2">
+<h2 class="anchored" data-anchor-id="data-sources">Data Sources</h2>
+<p>This project integrates multiple publicly available datasets:</p>
+<ul>
+<li>Brewery locations from the Open Brewery DB API</li>
+<li>Median home values from the American Community Survey (ACS)</li>
+<li>Census tract boundaries from the U.S. Census Bureau</li>
+</ul>
+</section>
+<section id="interactive-map" class="level2">
+<h2 class="anchored" data-anchor-id="interactive-map">Interactive Map</h2>
+<p>The interactive map below displays median home values by census tract, with brewery locations overlaid. Clicking a brewery reveals nearby neighborhood statistics within a walkable distance.</p>
+<iframe src="brewery_home_value_interactive.html" width="100%" height="650" style="border:none;">
+</iframe>
+<p><em>Tip: Zoom in and click brewery markers to view neighborhood summary statistics.</em></p>
+</section>
+<section id="key-takeaways" class="level2">
+<h2 class="anchored" data-anchor-id="key-takeaways">Key Takeaways</h2>
+<ul>
+<li>Census tracts closer to breweries tend to have higher median home values.</li>
+<li>Distance to the nearest brewery shows a moderate negative correlation with home values.</li>
+<li>Brewery presence appears to reflect broader neighborhood amenity patterns rather than acting as a direct driver of housing prices.</li>
+<li>Distance to the nearest brewery shows a moderate negative correlation with home values (r ≈ -0.39).</li>
+</ul>
+</section>
+<section id="explore-the-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="explore-the-analysis">Explore the Analysis</h2>
+<p>The pages linked above document the full data collection process, methodology, results, and conclusions of this project.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
